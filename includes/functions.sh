@@ -196,7 +196,12 @@ installtask() {
 					if [[ ${httpd_platform} == "apache2" ]]; then
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
-						WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						if [[ -z $(which nginx) ]]; then
+							# assume nginx is installed correctly
+							WEBSERVER_BACKEND="${PHP}-fpm"
+						else
+							WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						fi
 					fi
 					OPENJDK="openjdk-7"
 					JETTY_NAME="jetty8"
@@ -213,7 +218,12 @@ installtask() {
 						apt-get -y update >/dev/null
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
-						WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						if [[ -z $(which nginx) ]]; then
+							# assume nginx is installed correctly
+							WEBSERVER_BACKEND="${PHP}-fpm"
+						else
+							WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						fi
 					fi
 					OPENJDK="openjdk-7"
 					JETTY_NAME="jetty"
@@ -222,7 +232,12 @@ installtask() {
 					if [[ ${httpd_platform} == "apache2" ]]; then
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
-						WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						if [[ -z $(which nginx) ]]; then
+							# assume nginx is installed correctly
+							WEBSERVER_BACKEND="${PHP}-fpm"
+						else
+							WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						fi
 					fi
 					OPENJDK="openjdk-9"
 					JETTY_NAME="jetty8"
