@@ -75,7 +75,7 @@ checksystem() {
 }
 
 checkports() {
-	if [[ -z $(which mysql) || -z $(which dig) || -z $(which nc) ]]; then
+	if [ -x $(which mysql) || -x $(which dig) || -x $(which nc) ]; then
 		echo "$(textb [INFO]) - Installing prerequisites for DNS and port checks"
 		apt-get -y update > /dev/null
 		apt-get -y install curl netcat-traditional dnsutils mysql-client > /dev/null 2>&1
@@ -196,7 +196,7 @@ installtask() {
 					if [[ ${httpd_platform} == "apache2" ]]; then
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
-						if [[ -z $(which nginx) ]]; then
+						if [ -x $(which nginx) ]; then
 							# assume nginx is installed correctly
 							WEBSERVER_BACKEND="${PHP}-fpm"
 						else
@@ -218,7 +218,7 @@ installtask() {
 						apt-get -y update >/dev/null
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
-						if [[ -z $(which nginx) ]]; then
+						if [ -x $(which nginx) ]; then
 							# assume nginx is installed correctly
 							WEBSERVER_BACKEND="${PHP}-fpm"
 						else
@@ -232,7 +232,7 @@ installtask() {
 					if [[ ${httpd_platform} == "apache2" ]]; then
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
-						if [[ -z $(which nginx) ]]; then
+						if [ -x $(which nginx) ]; then
 							# assume nginx is installed correctly
 							WEBSERVER_BACKEND="${PHP}-fpm"
 						else
@@ -776,16 +776,16 @@ upgradetask() {
 		echo "$(redb [ERR]) - Upgrade not supported"
 		exit 1
 	fi
-	if [[ ! -z $(which apache2) && ! -z $(apache2 -v | grep "2.4") ]]; then
+	if [ ! -x $(which apache2) ] && [[ ! -z $(apache2 -v | grep "2.4") ]]; then
 		httpd_platform="apache2"
-	elif [[ ! -z $(which nginx) ]]; then
+	elif [ ! -x $(which nginx) ]; then
 		httpd_platform="nginx"
 	else
 		echo "$(pinkb [NOTICE]) - Falling back to Nginx: Apache 2.4 was not available!"
 		httpd_platform="nginx"
 	fi
 	echo "$(textb [INFO]) - Checking for upgrade prerequisites and collecting system information..."
-	if [[ -z $(which lsb_release) ]]; then
+	if [ -x $(which lsb_release) ]; then
 		apt-get -y update > /dev/null ; apt-get -y install lsb-release > /dev/null 2>&1
 	fi
 	[[ -z ${sys_hostname} ]] && sys_hostname=$(hostname -s)
