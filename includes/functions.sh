@@ -447,6 +447,19 @@ DEBIAN_FRONTEND=noninteractive ${APT} -y install dovecot-common dovecot-core dov
 			sed -i "s/my_dbhost/${my_dbhost}/g" ${DOVEFILES}
 			sed -i "s/MAILCOW_HASHING/${hashing_method}/g" ${DOVEFILES}
 			[[ ${IPV6} != "yes" ]] && sed -i '/listen =/c\listen = *' /etc/dovecot/dovecot.conf
+
+			if ! [[ -z "${my_replication_host}" ]] ; then
+				install -o root -g dovecot -m 640 dovecot/conf/dovecot-replication.conf /etc/dovecot/dovecot-replication.conf
+				sed -i "s/my_replication_user/${my_replication_user}/g" /etc/dovecot/dovecot-replication.conf
+				sed -i "s/my_replication_host/${my_replication_host}/g" /etc/dovecot/dovecot-replication.conf
+				sed -i "s/my_replication_key_file/${my_replication_key_file}/g" /etc/dovecot/dovecot-replication.conf
+				if [[ -z "${my_replication_port}" ]]; then
+					sed -i "s/-p my_replication_port//g" /etc/dovecot/dovecot-replication.conf
+				else
+					sed -i "s/my_replication_port/${my_replication_port}/g" /etc/dovecot/dovecot-replication.conf
+				fi
+			fi
+
 			mkdir /etc/dovecot/conf.d 2> /dev/null
 			mkdir -p /var/vmail/sieve 2> /dev/null
 			mkdir -p /var/vmail/public 2> /dev/null
