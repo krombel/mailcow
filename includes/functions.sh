@@ -196,7 +196,12 @@ installtask() {
 					if [[ ${httpd_platform} == "apache2" ]]; then
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
-						WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						if [[ -z $(which nginx) ]]; then
+							# which returned zero result so nginx is not installed
+							WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						else
+							WEBSERVER_BACKEND="${PHP}-fpm"
+						fi
 					fi
 					OPENJDK="openjdk-7"
 					JETTY_NAME="jetty8"
@@ -213,7 +218,12 @@ installtask() {
 						apt-get -y update >/dev/null
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
-						WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						if [[ -z $(which nginx) ]]; then
+							# assume nginx is installed correctly
+							WEBSERVER_BACKEND="${PHP}-fpm"
+						else
+							WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						fi
 					fi
 					OPENJDK="openjdk-7"
 					JETTY_NAME="jetty"
@@ -222,7 +232,12 @@ installtask() {
 					if [[ ${httpd_platform} == "apache2" ]]; then
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
-						WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						if [[ -z $(which nginx) ]]; then
+							# assume nginx is installed correctly
+							WEBSERVER_BACKEND="${PHP}-fpm"
+						else
+							WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						fi
 					fi
 					OPENJDK="openjdk-9"
 					JETTY_NAME="jetty8"
@@ -730,8 +745,6 @@ DEBIAN_FRONTEND=noninteractive ${APT} -y install dovecot-common dovecot-core dov
 			defaults write sogod NGImap4ConnectionStringSeparator = '/';
 			defaults write sogod SOGoMaximumPingInterval 354;
 			defaults write sogod SOGoMaximumSyncInterval 354;
-			defaults write sogod SOGoMaximumSyncResponseSize 1024;
-			defaults write sogod SOGoMaximumSyncWindowSize 15480;
 			defaults write sogod SOGoInternalSyncInterval 30;"
 			# ~1 for 10 users, more when AS is enabled - 384M is the absolute max. it may reach
 			# Set static worker count as workaround
