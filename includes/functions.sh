@@ -464,7 +464,7 @@ DEBIAN_FRONTEND=noninteractive ${APT} -y install dovecot-common dovecot-core dov
 			[[ ${IPV6} != "yes" ]] && sed -i '/listen =/c\listen = *' /etc/dovecot/dovecot.conf
 
 			if ! [[ -z "${my_replication_host}" ]] ; then
-				install -o root -g dovecot -m 640 dovecot/conf/dovecot-replication.conf /etc/dovecot/dovecot-replication.conf
+				install -o root -g dovecot -m 644 dovecot/conf/dovecot-replication.conf /etc/dovecot/dovecot-replication.conf
 				sed -i "s/my_replication_user/${my_replication_user}/g" /etc/dovecot/dovecot-replication.conf
 				sed -i "s/my_replication_host/${my_replication_host}/g" /etc/dovecot/dovecot-replication.conf
 				sed -i "s/my_replication_key_file/${my_replication_key_file}/g" /etc/dovecot/dovecot-replication.conf
