@@ -463,6 +463,11 @@ DEBIAN_FRONTEND=noninteractive ${APT} -y install dovecot-common dovecot-core dov
 			sed -i "s/MAILCOW_HASHING/${hashing_method}/g" ${DOVEFILES}
 			[[ ${IPV6} != "yes" ]] && sed -i '/listen =/c\listen = *' /etc/dovecot/dovecot.conf
 
+			repl_tmp=$(mktemp mailcow_replication_vars.XXXX)
+			grep "my_replication" mailcow.config > $repl_tmp
+			source $repl_tmp
+			rm $repl_tmp
+
 			if ! [[ -z "${my_replication_host}" ]] ; then
 				install -o root -g dovecot -m 644 dovecot/conf/dovecot-replication.conf /etc/dovecot/dovecot-replication.conf
 				sed -i "s/my_replication_user/${my_replication_user}/g" /etc/dovecot/dovecot-replication.conf
