@@ -473,6 +473,7 @@ DEBIAN_FRONTEND=noninteractive ${APT} -y install dovecot-common dovecot-core dov
 				else
 					sed -i "s/my_replication_port/${my_replication_port}/g" /etc/dovecot/dovecot-replication.conf
 				fi
+				echo "!include dovecot-replication.conf" >> /etc/dovecot/dovecot.conf
 			fi
 
 			mkdir /etc/dovecot/conf.d 2> /dev/null
