@@ -219,10 +219,10 @@ installtask() {
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
 						if [[ -z $(which nginx) ]]; then
-							# assume nginx is installed correctly
-							WEBSERVER_BACKEND="${PHP}-fpm"
-						else
+							# which returned zero result so nginx is not installed
 							WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						else
+							WEBSERVER_BACKEND="${PHP}-fpm"
 						fi
 					fi
 					OPENJDK="openjdk-7"
@@ -233,10 +233,10 @@ installtask() {
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
 						if [[ -z $(which nginx) ]]; then
-							# assume nginx is installed correctly
-							WEBSERVER_BACKEND="${PHP}-fpm"
-						else
+							# which returned zero result so nginx is not installed
 							WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						else
+							WEBSERVER_BACKEND="${PHP}-fpm"
 						fi
 					fi
 					OPENJDK="openjdk-9"
@@ -347,6 +347,8 @@ DEBIAN_FRONTEND=noninteractive ${APT} -y install dovecot-common dovecot-core dov
 					ln -s /etc/ssl/mail/certs/${sys_hostname}.${sys_domain}/privkey.pem /etc/ssl/mail/mail.key
 				fi
 				service ${httpd_platform} restart
+				service dovecot restart
+				service postfix restart
 			fi
 			;;
 		mysql)
