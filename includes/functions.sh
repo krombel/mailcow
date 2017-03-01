@@ -219,10 +219,10 @@ installtask() {
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
 						if [[ -z $(which nginx) ]]; then
-							# assume nginx is installed correctly
-							WEBSERVER_BACKEND="${PHP}-fpm"
-						else
+							# which returned zero result so nginx is not installed
 							WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						else
+							WEBSERVER_BACKEND="${PHP}-fpm"
 						fi
 					fi
 					OPENJDK="openjdk-7"
@@ -233,10 +233,10 @@ installtask() {
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
 						if [[ -z $(which nginx) ]]; then
-							# assume nginx is installed correctly
-							WEBSERVER_BACKEND="${PHP}-fpm"
-						else
+							# which returned zero result so nginx is not installed
 							WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						else
+							WEBSERVER_BACKEND="${PHP}-fpm"
 						fi
 					fi
 					OPENJDK="openjdk-9"
