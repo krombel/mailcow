@@ -332,6 +332,8 @@ DEBIAN_FRONTEND=noninteractive ${APT} -y install dovecot-common dovecot-core dov
 					ln -s /etc/ssl/mail/certs/${sys_hostname}.${sys_domain}/privkey.pem /etc/ssl/mail/mail.key
 				fi
 				service ${httpd_platform} restart
+				service dovecot restart
+				service postfix restart
 			fi
 			;;
 		mysql)
@@ -715,7 +717,7 @@ DEBIAN_FRONTEND=noninteractive ${APT} -y install dovecot-common dovecot-core dov
 			defaults write sogod SOGoTrashFolderName Trash;
 			defaults write sogod SOGoIMAPServer 'imap://127.0.0.1:143/';
 			defaults write sogod SOGoSMTPServer 127.0.0.1:588;
-			defaults write sogod SOGoSieveFolderEncoding = 'UTF-8';
+			defaults write sogod SOGoSieveFolderEncoding 'UTF-8';
 			defaults write sogod SOGoMailingMechanism smtp;
 			defaults write sogod SOGoMailCustomFromEnabled YES;
 			defaults write sogod SOGoPasswordChangeEnabled NO;
@@ -725,13 +727,11 @@ DEBIAN_FRONTEND=noninteractive ${APT} -y install dovecot-common dovecot-core dov
 			defaults write sogod SOGoLanguage English;
 			defaults write sogod SOGoMemcachedHost '127.0.0.1';
 			defaults write sogod WOListenQueueSize 300;
-			defaults write sogod WOPidFile = '/var/run/sogo.pid';
+			defaults write sogod WOPidFile '/var/run/sogo.pid';
 			defaults write sogod WOWatchDogRequestTimeout 10;
-			defaults write sogod NGImap4ConnectionStringSeparator = '/';
+			defaults write sogod NGImap4ConnectionStringSeparator '/';
 			defaults write sogod SOGoMaximumPingInterval 354;
 			defaults write sogod SOGoMaximumSyncInterval 354;
-			defaults write sogod SOGoMaximumSyncResponseSize 1024;
-			defaults write sogod SOGoMaximumSyncWindowSize 15480;
 			defaults write sogod SOGoInternalSyncInterval 30;"
 			# ~1 for 10 users, more when AS is enabled - 384M is the absolute max. it may reach
 			# Set static worker count as workaround
