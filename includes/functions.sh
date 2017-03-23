@@ -196,7 +196,12 @@ installtask() {
 					if [[ ${httpd_platform} == "apache2" ]]; then
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
-						WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						if [[ -z $(which nginx) ]]; then
+							# which returned zero result so nginx is not installed
+							WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						else
+							WEBSERVER_BACKEND="${PHP}-fpm"
+						fi
 					fi
 					OPENJDK="openjdk-7"
 					JETTY_NAME="jetty8"
@@ -213,7 +218,12 @@ installtask() {
 						apt-get -y update >/dev/null
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
-						WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						if [[ -z $(which nginx) ]]; then
+							# which returned zero result so nginx is not installed
+							WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						else
+							WEBSERVER_BACKEND="${PHP}-fpm"
+						fi
 					fi
 					OPENJDK="openjdk-7"
 					JETTY_NAME="jetty"
@@ -222,7 +232,12 @@ installtask() {
 					if [[ ${httpd_platform} == "apache2" ]]; then
 						WEBSERVER_BACKEND="apache2 apache2-utils libapache2-mod-${PHP}"
 					else
-						WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						if [[ -z $(which nginx) ]]; then
+							# which returned zero result so nginx is not installed
+							WEBSERVER_BACKEND="nginx-extras ${PHP}-fpm"
+						else
+							WEBSERVER_BACKEND="${PHP}-fpm"
+						fi
 					fi
 					OPENJDK="openjdk-9"
 					JETTY_NAME="jetty8"
@@ -253,7 +268,7 @@ php-net-socket php-net-url php-pear php-soap ${PHP} ${PHP}-cli ${PHP}-common ${P
 ${PHP}-intl ${PHP}-xsl ${PHP}-mcrypt ${PHP}-mysql libawl-php ${PHP}-xmlrpc ${DATABASE_BACKEND} ${WEBSERVER_BACKEND} mailutils pyzor razor \
 postfix postfix-mysql postfix-pcre postgrey pflogsumm spamassassin spamc sa-compile libdbd-mysql-perl opendkim opendkim-tools clamav-daemon \
 python-magic liblockfile-simple-perl libdbi-perl libmime-base64-urlsafe-perl libtest-tempdir-perl liblogger-syslog-perl \
-${OPENJDK}-jre-headless libcurl4-openssl-dev libexpat1-dev solr-jetty > /dev/null
+${OPENJDK}-jre-headless libcurl4-openssl-dev libexpat1-dev solr-jetty python-sqlalchemy python-beautifulsoup python-mysqldb > /dev/null
 			if [ "$?" -ne "0" ]; then
 				echo "$(redb [ERR]) - Package installation failed:"
 				tail -n 20 /var/log/dpkg.log
@@ -412,6 +427,10 @@ DEBIAN_FRONTEND=noninteractive ${APT} -y install dovecot-common dovecot-core dov
 			tar xf fuglu/inst/${fuglu_version}.tar -C fuglu/inst/ 2> /dev/null
 			(cd fuglu/inst/${fuglu_version} ; python setup.py -q install)
 			cp -R fuglu/conf/* /etc/fuglu/
+			sed -i "s/my_mailcowpass/${my_mailcowpass}/g" /etc/fuglu/fuglu.conf
+			sed -i "s/my_mailcowuser/${my_mailcowuser}/g" /etc/fuglu/fuglu.conf
+			sed -i "s/my_mailcowdb/${my_mailcowdb}/g" /etc/fuglu/fuglu.conf
+			sed -i "s/my_dbhost/${my_dbhost}/g" /etc/fuglu/fuglu.conf
 			if [[ -f /lib/systemd/systemd ]]; then
 				cp fuglu/inst/${fuglu_version}/scripts/startscripts/debian/8/fuglu.service /etc/systemd/system/fuglu.service
 				systemctl disable fuglu
